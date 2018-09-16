@@ -9,7 +9,7 @@
       <!--１列目１項：月切り替え-->
       <td width = "35%">
         <%= link_to "◀︎︎", user_url(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-xs btn-default" %>
-          &emsp;<%= @first_day.to_s(:month) %>　時間管理表&emsp;
+          &emsp;<%= @first_day.to_s(:month) %>　テストA時間管理表&emsp;
         <%= link_to "▶︎︎︎", user_url(params:{id: @user.id, first_day: @first_day.next_month }), class: "btn btn-xs btn-default" %>
       </td>
       
