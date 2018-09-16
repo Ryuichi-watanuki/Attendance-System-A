@@ -1,23 +1,25 @@
 <% provide(:title,"勤怠表示画面" ) %>
 
 <div>
-  <!--<p>現在ログイン中：<%#= current_user.name %>さん</p>-->
   <!--ユーザー情報テーブル-->
   <table class = "table-bordered table-condensed">
     <!--１列目-->
     <tr>
       <!--１列目１項：月切り替え-->
       <td width = "35%">
-        <%= link_to "◀︎︎", user_url(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-xs btn-default" %>
-          &emsp;<%= @first_day.to_s(:month) %>　テストA時間管理表&emsp;
-        <%= link_to "▶︎︎︎", user_url(params:{id: @user.id, first_day: @first_day.next_month }), class: "btn btn-xs btn-default" %>
+        <%= link_to "←", user_url(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-sm btn-primary" %>
+          &emsp;<%= @first_day.to_s(:month) %>　時間管理表&emsp;
+        <%= link_to "→", user_url(params:{id: @user.id, first_day: @first_day.next_month }), class: "btn btn-sm btn-primary" %>
       </td>
       
       <!--１列目２項：指定勤務時間表示-->
-      <td width = "25%">指定勤務時間　<%= basic_info_time(@user.specified_working_time) %></td>
+      <td class = "specified-time" width = "25%">
+        指定勤務開始時間　<%= basic_info_time(@user.specified_working_time) if @user.specified_working_time.present? %><br>
+        指定勤務終了時間　<%= basic_info_time(@user.specified_working_time) if @user.specified_working_time.present? %>
+      </td>
       
       <!--１列目３項：基本時間表示-->
-      <td width = "25%" colspan = "3"><%= basic_info_time(@user.basic_time) %>　基本時間</td>
+      <td width = "25%" colspan = "3"><%= basic_info_time(@user.basic_time) if @user.basic_time.present? %>　基本時間</td>
   　　
       <!--１列目４項：初日表示-->
   　  <td width = "15%">初日 <%= @first_day.to_s(:date) %></td>
@@ -51,27 +53,39 @@
   <table class = "table-bordered table-striped table-condensed">
     <!--勤怠情報表示ヘッダー-->
     <thead>
+      
       <!--１列目-->
       <tr>
-        <!--rowspan:縦結合、colspan：横結合-->
-        <th rowspan = "2" width = "7%">日付</th>
-        <th rowspan = "2" width = "6%">曜日</th>
-        <th colspan = "3" width = "20%">出社</th>
-        <th colspan = "3" width = "20%">退社</th>
-        <th rowspan = "2" width = "10%">在社時間</th>
-        <th rowspan = "2" width = "10%">備考</th>
-        <th rowspan = "2" width = "10%">残業指示</th>
-        <th rowspan = "2" width = "17%">指示者</th>
+        <th rowspan = "3" width = "8%">残業申請</th>
+        <th rowspan = "3" width = "5%">日付</th>
+        <th rowspan = "3" width = "4%">曜日</th>
+        <th colspan = "8" width = "38%">【実績】</th>
+        <th colspan = "5" width = "45%">【指定外勤務】</th>
       </tr>
       
       <!--２列目-->
       <tr>
-        <th width = "5%">時</th>
-        <th width = "5%">分</th>
-        <th width = "10%"></th>
-        <th width = "5%">時</th>
-        <th width = "5%">分</th>
-        <th width = "10%"></th>
+        <!--rowspan:縦結合、colspan：横結合-->
+        <th colspan = "3">出社</th>
+        <th colspan = "3">退社</th>
+        <th rowspan = "2">在社時間</th>
+        <th rowspan = "2">備考</th>
+        <th colspan = "2">終了予定時間</th>
+        <th rowspan = "2">指定外時間</th>
+        <th rowspan = "2">業務処理内容</th>
+        <th rowspan = "2">指示者確認印</th>
+      </tr>
+      
+      <!--３列目-->
+      <tr>
+        <th>時</th>
+        <th>分</th>
+        <th></th>
+        <th>時</th>
+        <th>分</th>
+        <th ></th>
+        <th>時</th>
+        <th>分</th>
       </tr>
     </thead>
     
@@ -80,6 +94,10 @@
       <% @days.each do |d| %>
       <!--この列をeachで繰り返し表示している-->
       <tr class = "days" >
+        
+        <!--残業申請ボタン-->
+        <td><%= button_to "残業申請",user_url,{class: "btn btn-request btn-primary btn-sm"} %></td>
+        
         <!--１項：日付-->
         <td><%= d.attendance_day.to_s(:day) %></td>
         
@@ -93,7 +111,7 @@
         <!--５項：出社ボタン表示（当日かつ出社時間が存在しない場合）-->
         <td>
           <% if d.attendance_day == Date.current && d.time_in.nil? %>
-            <%= button_to "出社",timein_creat_path(@user,params:{id: @user.id}),{class: "btn btn-attendance btn-default"}%>
+            <%= button_to "出社",timein_creat_path(@user,params:{id: @user.id}),{class: "btn btn-attendance btn-default"} %>
           <% end %>
         </td>
         
@@ -104,15 +122,18 @@
         <!--８項：退社ボタン表示（当日かつ出社時間あり、かつ退社時間なし）-->
         <td>
           <% if d.attendance_day == Date.current && d.time_in.present? && d.time_out.nil? %>
-            <%= button_to "退社",timeout_creat_path(@user,params:{id: @user.id}), class: "btn btn-attendance btn-default"%>
+            <%= button_to "退社",timeout_creat_path(@user,params:{id: @user.id}), class: "btn btn-attendance btn-default" %>
           <% end %>
         </td>
         
         <!--９項：在社時間表示（出社時間と退社時間がどちらもある）-->
         <td>
-          <%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present?%>
+          <%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present? %>
         </td>
-        
+        <!--備考-->
+        <td></td>
+        <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -124,6 +145,7 @@
     <!--勤怠情報表示フッター-->
     <tfoot>
       <tr>
+        <td></td>
         <!--１項：総合勤務時間（基本時間 * 出勤日数）-->
         <td colspan = "2">
           <%= basic_info_time(@user.basic_time).to_d * @attendances_sum if @user.basic_time.present? %>
@@ -135,7 +157,7 @@
         <td><%= ((@total_time.to_d/ 60)/ 60).truncate(2) if @total_time.present? %></td>
         
         <td></td>
-        <td></td>
+        <td colspan = "4"></td>
         <td>所属長承認</td>
       </tr>
     </tfoot>

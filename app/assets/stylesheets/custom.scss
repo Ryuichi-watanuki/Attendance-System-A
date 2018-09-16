@@ -38,9 +38,6 @@ textarea {
   }
 }
 
-.btn.btn-primary {
-  margin-top: 15px;
-}
 
 /* typography */
 
@@ -355,6 +352,14 @@ th {
   padding: 0px 15px 0px 15px;
 }
 
+// 残業申請ボタン：位置調整
+// メモ：marginは要素の外の余白、paddingは要素の中の余白
+.btn-request {
+  padding: 3px 0px 3px 0px;
+  margin: 3px 0px 3px 0px;
+}
+
+
 .tf {
   margin: 2px;
 }
@@ -373,6 +378,12 @@ a.updbtn {
   margin-top: 15px;
 }
 
+// 日付表示：フォントサイズ少し大きめに
 td.day {
   font-size: 16px;
+}
+
+// 指定勤務時間：２行で表示するのでフォントサイズ少し小さめに
+td.specified-time {
+  font-size: 13px;
 }
