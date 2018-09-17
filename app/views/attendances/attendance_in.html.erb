@@ -1,0 +1,30 @@
+<% provide(:title,"出勤中社員一覧" ) %>
+
+<div>
+    
+  <h1>出勤中社員一覧</h1>
+    
+  <!--出勤中社員表示テーブル-->
+  <table align = "center" class = "attendance-in table-bordered table-condensed table-striped">
+    <!--１列目-->
+    <thead>
+      <tr>
+        <th width = "20%">社員番号</th>
+        <th width = "20%">所属</th>
+        <th width = "30%">氏名</th>
+        <th width = "30%">出社時間</th>
+    　</tr>
+    </thead>  
+    
+    <tbody>
+      <!--each_value：ハッシュの値のみを繰り返す-->
+    　<% @time_in_user.each_value do | num, name, affiliation, time_in | %>
+      　<tr>
+          <td><%= num %></td>
+          <td><%= affiliation %></td>
+          <td><%= name %></td>
+          <td><%= half_to_full(time_in.to_s(:time)) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

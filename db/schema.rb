@@ -57,7 +57,9 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.datetime "reset_sent_at"
     t.string "affiliation"
     t.datetime "basic_time"
-    t.datetime "specified_working_time"
+    t.datetime "specified_start_time"
+    t.datetime "specified_end_time"
+    t.integer "employee_number"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

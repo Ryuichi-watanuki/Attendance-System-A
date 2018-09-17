@@ -343,8 +343,8 @@ th {
 
 // 勤怠編集画面遷移ボタン
 .btn-edit-attendance {
-  margin: 25px 0px 10px 0px;
-  width: 100%;
+  margin: 25px 5px 10px 0px;
+  // width: 100%;
 }
 
 // 出社・退社ボタン
@@ -386,4 +386,8 @@ td.day {
 // 指定勤務時間：２行で表示するのでフォントサイズ少し小さめに
 td.specified-time {
   font-size: 13px;
+}
+
+table.attendance-in {
+  width: 70%;
 }

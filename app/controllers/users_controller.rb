@@ -9,7 +9,8 @@ class UsersController < ApplicationController
   # 勤怠表示画面
   def show
     @user = User.find(params[:id])
-    
+   
+     
     if current_user.admin? || current_user.id == @user.id
       @week = %w{日 月 火 水 木 金 土}
       
@@ -50,11 +51,12 @@ class UsersController < ApplicationController
       @attendances_count = i
       @attendances_sum = @days.where.not(time_in: nil, time_out: nil).count
     else
-    flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
-    redirect_to current_user
+      flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
+      redirect_to current_user
     end
   end
   
+  # 出勤時間登録
   def time_in
     @user = User.find(params[:id])
     @time_in = @user.attendances.find_by(attendance_day: Date.current)
@@ -64,6 +66,7 @@ class UsersController < ApplicationController
     redirect_to @user
   end
 
+  # 退社時間登録
   def time_out
     @user = User.find(params[:id])
     @time_out = @user.attendances.find_by(attendance_day: Date.current)
@@ -74,6 +77,7 @@ class UsersController < ApplicationController
     redirect_to @user
   end
   
+  # ユーザ一覧
   def index
     if params[:q] && params[:q].reject { |key, value| value.blank? }.present?
       @q = User.ransack(search_params, activated: true)
@@ -85,7 +89,7 @@ class UsersController < ApplicationController
     @users = @q.result.paginate(page: params[:page])
   end
 
-  
+  # ユーザー新規登録画面
   def new
     @user = User.new
   end
@@ -101,6 +105,7 @@ class UsersController < ApplicationController
     end
   end
   
+  # ユーザー情報編集画面
   def edit
     @user = User.find(params[:id])
   end
@@ -114,14 +119,17 @@ class UsersController < ApplicationController
       render 'edit'
     end
   end
-  
+
+  # ユーザー消去  
   def destroy
     User.find(params[:id]).destroy
-    flash[:success] = "User deleted"
+    flash[:success] = "消去しました。"
     redirect_to users_url
   end
   
+  # 基本情報編集画面
   def edit_basic_info
+    # パラメータを受け取っている？
     if params[:id].nil?
       @user  = User.find(current_user.id)
     else
@@ -129,6 +137,7 @@ class UsersController < ApplicationController
     end
   end
   
+  # 基本情報更新アクション
   def basic_info_edit
     @user  = User.find(params[:id])
     
@@ -144,8 +153,8 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :activated,
-      :affiliation, :basic_time, :specified_working_time, :password_confirmation)
+      params.require(:user).permit(:name, :email, :employee_number, :password, :activated,
+      :affiliation, :basic_time, :specified_start_time, :specified_end_time, :password_confirmation)
     end
     
     def search_params
