@@ -10,6 +10,17 @@ User.create!(name:  "綿貫　竜一",
              activated: true,
              activated_at: Time.zone.now)
 
+User.create!(name:  "ボス",
+             email: "boss@railstutorial.org",
+             password:              "bossboss",
+             password_confirmation: "bossboss",
+             affiliation: "上長",
+             basic_time: Time.parse("2018/04/07 07:30"),
+            #  specified_working_time: Time.parse("2018/04/07 08:00"),
+             boss:      true,
+             activated: true,
+             activated_at: Time.zone.now)
+
 User.create!(name:  "テスト一般ユーザ用",
              email: "example2@railstutorial.org",
              password:              "foobar2",
@@ -17,9 +28,10 @@ User.create!(name:  "テスト一般ユーザ用",
              affiliation: "一般",
              basic_time: Time.parse("2018/04/07 07:30"),
             #  specified_working_time: Time.parse("2018/04/07 08:00"),
-             admin:     false,
              activated: true,
              activated_at: Time.zone.now)
+
+
 
 # coding: utf-8
 
@@ -38,18 +50,3 @@ User.create!(name:  "テスト一般ユーザ用",
                activated: true,
                activated_at: Time.zone.now)
 end
-
-# # マイクロポスト
-# users = User.order(:created_at).take(6)
-# 50.times do
-#   content = Faker::Lorem.sentence(5)
-#   users.each { |user| user.microposts.create!(content: content) }
-# end
-
-# # リレーションシップ
-# users = User.all
-# user  = users.first
-# following = users[2..50]
-# followers = users[3..40]
-# following.each { |followed| user.follow(followed) }
-# followers.each { |follower| follower.follow(user) }

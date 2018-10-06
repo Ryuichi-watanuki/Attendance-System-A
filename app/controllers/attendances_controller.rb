@@ -73,9 +73,9 @@ class AttendancesController < ApplicationController
     @time_in_user = {}
     User.all.each do |user|
       # このifがよくわからなくなったらany?メソッドをおさらい
-      # ブロックに記述した条件が真の場合、処理を実行する
-      if user.attendances.any? { |obj| (obj.attendance_day == Date.current && obj.time_in.present? && obj.time_out.blank?) }
-        # 出社時間を拾うため
+      # ブロックに記述した条件が真の場合、Trueを返し処理を実行、次のユーザーへ
+      # ユーザーの持つ日付が本日、かつ出社登録済、かつ退社時間は未登録がブロックに記述した条件
+      if user.attendances.any? {|obj| (obj.attendance_day == Date.current && obj.time_in.present? && obj.time_out.blank?)}
         today = user.attendances.find_by(attendance_day: Date.current)
         # キーを任意の文字列で設定したら失敗した、user毎の変数で設定する。
         # eachで繰り返してるuserのidをキーに社員番号、氏名、所属、出社時間を代入

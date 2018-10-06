@@ -1,7 +1,8 @@
 require "date"
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
-  before_action :correct_user,   only: [:edit, :update]
+  # before_action :correct_user,   only: [:edit, :update]
+  before_action :correct_or_admin_user,   only: [:edit, :update]
   before_action :admin_user,     only: [:index,:edit_basic_info, :destroy]
   
   
@@ -9,8 +10,7 @@ class UsersController < ApplicationController
   # 勤怠表示画面
   def show
     @user = User.find(params[:id])
-   
-     
+    
     if current_user.admin? || current_user.id == @user.id
       @week = %w{日 月 火 水 木 金 土}
       
@@ -165,6 +165,14 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_url) unless current_user?(@user)
+    end
+    
+    def correct_or_admin_user
+      @user = User.find(params[:id])
+      if not current_user?(@user) and not current_user.admin?
+        flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
+        redirect_to(root_url)
+      end
     end
     
     # 管理者かどうか確認

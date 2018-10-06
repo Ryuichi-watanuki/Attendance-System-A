@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get '/attendance_edit', to: 'attendances#attendance_edit'
   post '/update_all',     to: 'attendances#update_bunch'
   
+  # 出勤中社員一覧画面
   get '/attendance_in', to: 'attendances#attendance_in'
   
 

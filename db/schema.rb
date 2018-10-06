@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.date "attendance_day"
     t.datetime "time_in"
     t.datetime "time_out"
+    t.string "remarks"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -50,6 +51,7 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.string "password_digest"
     t.string "remember_digest"
     t.boolean "admin", default: false
+    t.boolean "boss", default: false
     t.string "activation_digest"
     t.boolean "activated", default: true
     t.datetime "activated_at"
@@ -60,6 +62,7 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.datetime "specified_start_time"
     t.datetime "specified_end_time"
     t.integer "employee_number"
+    t.integer "card_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

@@ -14,7 +14,7 @@
             <li><%= link_to "出勤中社員一覧", attendance_in_path, id: "header-right" %></li>
             
             <% if params[:id].nil? %>
-              <li><%= link_to "基本情報修正", basic_info_url, id: "header-right" %></li>
+              <li><%= link_to "基本情報の修正", basic_info_url, id: "header-right" %></li>
             <% else %>
               <li><%= link_to "基本情報の修正", basic_info_url(params:{id: @user.id}), id: "header-right" %></li>
             <% end %>

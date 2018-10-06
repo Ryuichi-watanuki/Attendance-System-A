@@ -1,8 +1,9 @@
 <li>
-  <%= gravatar_for user, size: 50 %>
+  <%#= gravatar_for user, size: 50 %>
   <%= link_to user.name, user %>
   <% if current_user.admin? && !current_user?(user) %>
-    | <%= link_to "基本情報編集", basic_info_url(params:{id: user.id}) %>
-    | <%= link_to "削除", user, method: :delete,data: { confirm: "本当に削除してよろしいですか？" } %>
+    | <%= link_to "基本情報編集", basic_info_url(params:{id: user.id}), class: "btn btn-sm btn-primary" %>
+    | <%= link_to "設定", edit_user_path(user), class: "btn btn-sm btn-primary" %>
+    | <%= link_to "削除", user, method: :delete,data: { confirm: "本当に削除してよろしいですか？" }, class: "btn btn-sm btn-primary" %>
   <% end %>
 </li>

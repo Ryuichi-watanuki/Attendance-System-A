@@ -4,6 +4,7 @@ class CreateAttendances < ActiveRecord::Migration[5.1]
       t.date :attendance_day
       t.datetime :time_in
       t.datetime :time_out
+      t.string   :remarks
       t.references :user, foreign_key: true
 
 
