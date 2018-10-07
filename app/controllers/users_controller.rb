@@ -167,6 +167,7 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user?(@user)
     end
     
+    # カレントユーザーがログインユーザー、もしくは管理者か確認
     def correct_or_admin_user
       @user = User.find(params[:id])
       if not current_user?(@user) and not current_user.admin?
