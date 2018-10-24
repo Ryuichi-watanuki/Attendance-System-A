@@ -97,6 +97,19 @@ class UsersController < ApplicationController
       @title = "全てのユーザー"
     end
     @users = @q.result.paginate(page: params[:page])
+    
+    respond_to do |format|
+      format.html
+      format.csv do
+        if params[:download_type].present? && params[:download_type] == "format"
+          # フォーマットダウンロードの場合
+          csv_format_download
+        else
+          # 一覧ダウンロードの場合
+          # csv_download
+        end
+      end
+    end
   end
 
   # ユーザー新規登録画面
@@ -159,6 +172,45 @@ class UsersController < ApplicationController
     end
   end
   
+  # CSVインポート
+  def csv_import
+    success_count = 0
+    # エラー情報
+    error = ""
+    begin
+      # windowsで作られたファイルに対応するので、encoding: "SJIS"を付けている
+      unless params[:users_file].nil?
+        CSV.foreach(params[:users_file].path, headers: true, encoding: "SJIS") do |row|
+          user = User.find_by(email: row["メールアドレス"])
+          # 既存のemailがなければ新規登録
+          user = User.new if user.blank?
+          if user.update({ name: row["ユーザー名"], email: row["メールアドレス"], password: row["パスワード"], admin_flg: row["管理者フラグ"], delete_flg: false })
+            success_count += 1
+          else
+            # エラーの場合はメッセージを格納する
+            error += "ユーザ名（#{user.name}）:#{user.errors.full_messages.join(", ")}<br>"
+          end
+        end
+      else
+        flash[:warning] = 'ファイルが選択されていません'
+        redirect_to users_path
+        return
+      end
+      
+      if error.blank?
+        flash[:success] = '登録に成功しました'
+        redirect_to users_path
+      else
+        # 登録件数があれば表示
+        flash[:success] = "#{success_count}件登録に成功しました" if success_count > 0
+        flash[:danger] = error
+        redirect_to users_path
+      end
+    rescue
+      flash[:danger] = '登録に失敗しました'
+      redirect_to users_path
+    end
+  end
   
   private
 
@@ -200,5 +252,15 @@ class UsersController < ApplicationController
     def admin_user
       redirect_to(root_url) unless current_user.admin?
     end
+    
+    # CSVフォーマットのダウンロード
+    def csv_format_download
+      csv_date = CSV.generate(encoding: Encoding::SJIS, row_sep: "\r\n", force_quotes: true) do |csv|
+        csv_header = ["ID","氏名","メールアドレス","所属","社員番号","カードID","基本時間","指定勤務開始時間","指定勤務終了時間","上長フラグ","管理者フラグ","パスワード"]
+        csv << csv_header
+      end
+      send_data(csv_date,{filename: "users_format.csv", type: 'text/csv; charset=shift_jis'})
+    end
+    
 end
 

@@ -1,6 +1,19 @@
 <% provide(:title, "ユーザ一覧") %>
 <h1><%= @title %></h1>
 
+  <%= form_tag users_csv_import_path, method: :post, multipart: true do |f| %>
+    <div class="search_item">
+      <%= text_field_tag 'filename',"", id: "filename", disabled: true, style: "display: none;" %>
+      <%= file_field_tag 'users_file', id: "file_input", style: "display: none;", onchange: "file_selected(this);" %>
+      <%= button_tag 'ファイル選択', class: %i(btn btn-sm btn-default csv_input_btn), type: 'button', onclick: "$('#file_input').click();" %>
+      <label for="file" class="selectedFileName">ファイルを選択してください</label>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">CSVインポート</button>
+      <%= link_to "CSVフォーマットダウンロード", users_path(params:{search: @search_str, download_type: "format"}, format: :csv), class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
 <div class="row">
   <div class="search_form">
     <%= render 'users/search_form' %>
@@ -21,3 +34,12 @@
 <% end %>
 
 <%= will_paginate @customers, { :previous_label => '前へ', :next_label => '次へ' } %>
+
+<script> //ファイル選択時にファイル名のラベルを設定する
+  function file_selected(obj){
+    var fileName = '';
+    if(obj.files[0] != "undefined"){ fileName = obj.files[0].name; }
+    $(obj).parent().find('.selectedFileName').text(fileName);
+    return false;
+  }
+</script>

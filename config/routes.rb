@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   # 出勤中社員一覧画面
   get '/attendance_in', to: 'attendances#attendance_in'
   
+  post 'users/csv_import'
+
 
   resources :users do
     member do
