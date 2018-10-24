@@ -7,7 +7,7 @@
     <tr>
       <!--１列目１項：月切り替え-->
       <td width = "35%">
-        <%= link_to "←", user_url(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-sm btn-primary" %>
+        <%= link_to "←", user_path(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-sm btn-primary" %>
           &emsp;<%= @first_day.to_s(:month) %>　時間管理表&emsp;
         <%= link_to "→", user_url(params:{id: @user.id, first_day: @first_day.next_month }), class: "btn btn-sm btn-primary" %>
       </td>
@@ -46,20 +46,16 @@
   </table>
 
   <!--勤怠編集画面遷移ボタン-->
-  <%= link_to "勤怠を編集", attendance_edit_url(params:{id: @user.id, first_day: @first_day }),\
-  class: "btn btn-edit-attendance btn-primary" %>
+  <%= link_to "勤怠を編集", attendance_edit_url(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
 
-  <%= link_to "勤怠修正ログ（承認済）", attendance_edit_url(params:{id: @user.id, first_day: @first_day }),\
-  class: "btn btn-edit-attendance btn-primary" %>
+  <%= link_to "勤怠修正ログ（承認済）", attendance_edit_url(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
 
-  <%= link_to "CSV出力", attendance_edit_url(params:{id: @user.id, first_day: @first_day }),\
-  class: "btn btn-edit-attendance btn-primary" %>
+  <%= link_to "CSV出力", attendance_edit_url(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
 
   <!--勤怠情報表示テーブル-->
   <table class = "table-bordered table-striped table-condensed">
     <!--勤怠情報表示ヘッダー-->
     <thead>
-      
       <!--１列目-->
       <tr>
         <th rowspan = "3" width = "8%">残業申請</th>

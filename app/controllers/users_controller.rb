@@ -33,8 +33,7 @@ class UsersController < ApplicationController
       end
       
       # 当月を昇順で取得し@daysへ代入
-      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', \
-      @first_day, @last_day).order('attendance_day')
+      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day')
       
       # 在社時間の集計、ついでに出勤日数も
       i = 0
@@ -60,9 +59,15 @@ class UsersController < ApplicationController
   def time_in
     @user = User.find(params[:id])
     @time_in = @user.attendances.find_by(attendance_day: Date.current)
-    @time_in.update_attributes(time_in: DateTime.new(DateTime.now.year,\
-    DateTime.now.month, DateTime.now.day,DateTime.now.hour,DateTime.now.min,0))
-    flash[:info] = "今日も一日がんばるぞい！"
+    time_in = DateTime.new(
+      DateTime.now.year,
+      DateTime.now.month,
+      DateTime.now.day,
+      DateTime.now.hour,
+      DateTime.now.min,0
+      )
+    @time_in.update_attributes(time_in: time_in) 
+    flash[:info] = "おはようございます。"
     redirect_to @user
   end
 
@@ -70,10 +75,15 @@ class UsersController < ApplicationController
   def time_out
     @user = User.find(params[:id])
     @time_out = @user.attendances.find_by(attendance_day: Date.current)
-    timeout = DateTime.new(DateTime.now.year,DateTime.now.month,\
-    DateTime.now.day,DateTime.now.hour,DateTime.now.min,0)
+    timeout = DateTime.new(
+      DateTime.now.year,
+      DateTime.now.month,
+      DateTime.now.day,
+      DateTime.now.hour,
+      DateTime.now.min,0
+    )
     @time_out.update_attributes(time_out: timeout)
-    flash[:info] = "今日も一日お疲れ様でした。"
+    flash[:info] = "お疲れ様でした。"
     redirect_to @user
   end
   
@@ -153,8 +163,18 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :employee_number, :password, :activated,
-      :affiliation, :basic_time, :specified_start_time, :specified_end_time, :password_confirmation)
+      params.require(:user).permit(
+        :name,
+        :email,
+        :employee_number,
+        :password,
+        :activated,
+        :affiliation,
+        :basic_time,
+        :specified_start_time,
+        :specified_end_time,
+        :password_confirmation
+      )
     end
     
     def search_params
@@ -167,7 +187,7 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless current_user?(@user)
     end
     
-    # カレントユーザーがログインユーザー、もしくは管理者か確認
+    # カレントユーザーがログインユーザー、もしくは管理者かを確認
     def correct_or_admin_user
       @user = User.find(params[:id])
       if not current_user?(@user) and not current_user.admin?

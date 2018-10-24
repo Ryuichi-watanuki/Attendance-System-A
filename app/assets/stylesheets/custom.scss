@@ -257,8 +257,29 @@ input {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-bottom: 1px solid $gray-lighter;
+    // border-bottom: 1px solid $gray-lighter;
   }
+}
+
+// ユーザ一覧画面　アコーディオン内左側
+.user-edit-accordion-left {
+  float: left;
+  width: 46%;
+  margin-left: 20px;
+}
+
+// ユーザ一覧画面　アコーディオン内右側
+.user-edit-accordion-right {
+  float: right;
+  width: 46%;
+  margin-right: 20px;
+}
+
+// ユーザ一覧画面　アコーディオン内下部
+.user-edit-accordion-bottom {
+  clear: both;
+  width: 70%;
+  margin: 0 auto;
 }
 
 /* microposts */

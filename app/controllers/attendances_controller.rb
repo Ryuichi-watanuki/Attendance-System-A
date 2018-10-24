@@ -71,15 +71,18 @@ class AttendancesController < ApplicationController
   def attendance_in
     # 空のハッシュを定義
     @time_in_user = {}
+    @attendance_in_count = 0
     User.all.each do |user|
-      # このifがよくわからなくなったらany?メソッドをおさらい
+      # このifがよくわからなくなったらany?メソッドをおさらいしろ
       # ブロックに記述した条件が真の場合、Trueを返し処理を実行、次のユーザーへ
       # ユーザーの持つ日付が本日、かつ出社登録済、かつ退社時間は未登録がブロックに記述した条件
       if user.attendances.any? {|obj| (obj.attendance_day == Date.current && obj.time_in.present? && obj.time_out.blank?)}
-        today = user.attendances.find_by(attendance_day: Date.current)
-        # キーを任意の文字列で設定したら失敗した、user毎の変数で設定する。
+        today = user.attendances.find_by(attendance_day: Date.current) #出勤時間も表示してみた
+        # キーを任意の文字列で設定したら失敗した、user毎の変数で設定しないと被る
         # eachで繰り返してるuserのidをキーに社員番号、氏名、所属、出社時間を代入
+        # user_idは一意なのでコレを使用、ビューではvalueを使う
         @time_in_user[user.id] = user.employee_number, user.name, user.affiliation, today.time_in
+        @attendance_in_count += 1
       end
     end
   end
