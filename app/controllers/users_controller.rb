@@ -96,7 +96,7 @@ class UsersController < ApplicationController
       @q = User.ransack(activated: true)
       @title = "全てのユーザー"
     end
-    @users = @q.result.paginate(page: params[:page])
+    @users = @q.result.paginate(page: params[:page], per_page: 20)
     
     respond_to do |format|
       format.html
@@ -184,7 +184,17 @@ class UsersController < ApplicationController
           user = User.find_by(email: row["メールアドレス"])
           # 既存のemailがなければ新規登録
           user = User.new if user.blank?
-          if user.update({ name: row["ユーザー名"], email: row["メールアドレス"], password: row["パスワード"], admin_flg: row["管理者フラグ"], delete_flg: false })
+          if user.update({ name: row["ユーザー名"],
+            email: row["メールアドレス"],
+            affiliation: row["所属"],
+            employee_number: row["社員番号"],
+            card_id: row["カードID"],
+            basic_time: row["基本時間"],
+            specified_start_time: row["指定勤務開始時間"],
+            specified_end_time: row["指定勤務終了時間"],
+            boss: row["上長フラグ"],
+            admin: row["管理者フラグ"],
+            password: row["パスワード"]})
             success_count += 1
           else
             # エラーの場合はメッセージを格納する
@@ -219,6 +229,7 @@ class UsersController < ApplicationController
         :name,
         :email,
         :employee_number,
+        :card_id,
         :password,
         :activated,
         :affiliation,

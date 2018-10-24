@@ -4,9 +4,10 @@ User.create!(name:  "綿貫　竜一",
              password:              "foobar",
              password_confirmation: "foobar",
              affiliation: "管理者",
-             basic_time: Time.parse("2018/04/07 07:30"),
+             basic_time: Time.zone.parse("07:30"),
             #  specified_working_time: Time.parse("2018/04/07 08:00"),
              admin:     true,
+             boss:      true,
              activated: true,
              activated_at: Time.zone.now)
 
@@ -15,7 +16,7 @@ User.create!(name:  "ボス",
              password:              "bossboss",
              password_confirmation: "bossboss",
              affiliation: "上長",
-             basic_time: Time.parse("2018/04/07 07:30"),
+             basic_time: Time.zone.parse("07:30"),
             #  specified_working_time: Time.parse("2018/04/07 08:00"),
              boss:      true,
              activated: true,
@@ -26,7 +27,7 @@ User.create!(name:  "テスト一般ユーザ用",
              password:              "foobar2",
              password_confirmation: "foobar2",
              affiliation: "一般",
-             basic_time: Time.parse("2018/04/07 07:30"),
+             basic_time: Time.zone.parse("07:30"),
             #  specified_working_time: Time.parse("2018/04/07 08:00"),
              activated: true,
              activated_at: Time.zone.now)
@@ -45,8 +46,12 @@ User.create!(name:  "テスト一般ユーザ用",
                password:              password,
                password_confirmation: password,
                affiliation:        affiliation,
-               basic_time: Time.parse("2018/04/07 07:30"),
+               basic_time: Time.zone.parse("07:30"),
             #   specified_working_time: Time.parse("2018/04/07 08:00"),
                activated: true,
                activated_at: Time.zone.now)
 end
+
+Base.create!(base_name: "ココット村")
+Base.create!(base_name: "ポッケ村")
+Base.create!(base_name: "ユクモ村")

@@ -19,6 +19,7 @@
               <li><%= link_to "基本情報の修正", basic_info_url(params:{id: @user.id}), id: "header-right" %></li>
             <% end %>
             
+            <li><%= link_to "拠点情報の修正", attendance_in_path, id: "header-right" %></li>
           <% end %>
           
           <li class="dropdown">

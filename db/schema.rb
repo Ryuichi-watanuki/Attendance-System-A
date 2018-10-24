@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821134018) do
+ActiveRecord::Schema.define(version: 20181024123338) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "attendance_day"
@@ -21,6 +21,12 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_attendances_on_user_id"
+  end
+
+  create_table "bases", force: :cascade do |t|
+    t.string "base_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "microposts", force: :cascade do |t|
@@ -62,7 +68,7 @@ ActiveRecord::Schema.define(version: 20180821134018) do
     t.datetime "specified_start_time"
     t.datetime "specified_end_time"
     t.integer "employee_number"
-    t.integer "card_id"
+    t.string "card_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
