@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get 'bases/new'
 
   root   'static_pages#home'
   get    '/signup',  to: 'users#new'
@@ -7,6 +6,8 @@ Rails.application.routes.draw do
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
   # get '/attendance_edit', to: 'users#show'
+
+  get '/display_change', to: 'users#display_mode_change'
 
   # 基本情報編集画面  
   get '/basic_info',      to: 'users#edit_basic_info'
@@ -26,12 +27,7 @@ Rails.application.routes.draw do
   post 'users/csv_import'
 
 
-  resources :users do
-    member do
-      get :following, :followers
-    end
-  end
-  
+  resources :users
   resources :bases
   resources :account_activations, only: [:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]

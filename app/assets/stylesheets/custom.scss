@@ -252,6 +252,7 @@ input {
 /* Users index */
 
 .users {
+  clear: both;
   list-style: none;
   margin: 0;
   li {
@@ -365,7 +366,13 @@ th {
 // 勤怠編集画面遷移ボタン
 .btn-edit-attendance {
   margin: 25px 5px 10px 0px;
-  // width: 100%;
+  float: left;
+}
+
+// 1週間表示切り替えボタン
+.btn-attendance-week {
+  margin: 25px 0px 10px 0px;
+  float: right;
 }
 
 // 出社・退社ボタン
@@ -411,4 +418,9 @@ td.specified-time {
 
 table.attendance-in {
   width: 70%;
+}
+
+// ページネーション
+.pagination {
+  margin: 0;
 }

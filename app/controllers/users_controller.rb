@@ -1,4 +1,3 @@
-require "date"
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   # before_action :correct_user,   only: [:edit, :update]
@@ -6,20 +5,16 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: [:index,:edit_basic_info, :destroy]
   
   
-  
   # 勤怠表示画面
   def show
     @user = User.find(params[:id])
+    params[:display_mode].nil? ? @display_month = true : @display_month = false
+    
     
     if current_user.admin? || current_user.id == @user.id
       @week = %w{日 月 火 水 木 金 土}
       
-      if not params[:first_day].nil?
-        @first_day = Date.parse(params[:first_day])
-      else
-        @first_day = Date.current.beginning_of_month
-      end
-      
+      !params[:first_day].nil? ? @first_day = Date.parse(params[:first_day]) : @first_day = Date.current.beginning_of_month
       @last_day = @first_day.end_of_month
       
       # 取得月の初日から終日まで繰り返し処理
@@ -32,8 +27,12 @@ class UsersController < ApplicationController
         end
       end
       
-      # 当月を昇順で取得し@daysへ代入
-      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day')
+      if @display_month == true
+        # 当月を昇順で取得し@daysへ代入
+        @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day')
+      else
+        @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day').paginate(page: params[:page], per_page: 7)
+      end
       
       # 在社時間の集計、ついでに出勤日数も
       i = 0
@@ -53,6 +52,13 @@ class UsersController < ApplicationController
       flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
       redirect_to current_user
     end
+  end
+  
+  # 週間表示切替
+  def display_mode_change
+    @user = User.find(params[:id])
+    !params[:first_day].nil? ? @first_day = Date.parse(params[:first_day]) : @first_day = Date.current.beginning_of_month
+    redirect_to user_path(id: @user.id, display_mode: "weeks", first_day: @first_day)
   end
   
   # 出勤時間登録

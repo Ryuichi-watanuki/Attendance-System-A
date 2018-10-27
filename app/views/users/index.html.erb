@@ -14,11 +14,12 @@
   </div>
 <% end %>
 
-  <div class="search_form">
-    <%= render 'users/search_form' %>
-  </div>
+<div style="float: left; margin: 20px;"><%= will_paginate @customers, { :previous_label => '前へ', :next_label => '次へ' } %></div>
 
-<%= will_paginate @customers, { :previous_label => '前へ', :next_label => '次へ' } %>
+<div class="search_form">
+  <%= render 'users/search_form' %>
+</div>
+
 
 <% unless @users.empty? %>
   <ul class="users">

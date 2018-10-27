@@ -1,0 +1,43 @@
+<!--ユーザー情報テーブル-->
+<table class = "table-bordered table-condensed">
+  <!--１列目-->
+  <tr>
+    <!--１列目１項：月切り替え-->
+    <td width = "35%">
+      <%= link_to "←", user_path(params:{id: @user.id, first_day: @first_day.prev_month }), class: "btn btn-sm btn-primary" %>
+        &emsp;<%= @first_day.to_s(:month) %>　時間管理表&emsp;
+      <%= link_to "→", user_path(params:{id: @user.id, first_day: @first_day.next_month }), class: "btn btn-sm btn-primary" %>
+    </td>
+    
+    <!--１列目２項：指定勤務時間表示-->
+    <td class = "specified-time" width = "25%">
+      指定勤務開始時間　<%= basic_info_time(@user.specified_start_time) if @user.specified_start_time.present? %><br>
+      指定勤務終了時間　<%= basic_info_time(@user.specified_end_time) if @user.specified_end_time.present? %>
+    </td>
+    
+    <!--１列目３項：基本時間表示-->
+    <td width = "25%" colspan = "3"><%= basic_info_time(@user.basic_time) if @user.basic_time.present? %>　基本時間</td>
+　　
+    <!--１列目４項：初日表示-->
+　  <td width = "15%">初日 <%= @first_day.to_s(:date) %></td>
+　</tr>
+  
+　<!--２列目-->
+　<tr>
+    <!--２列目１項：所属表示-->
+    <td>所属：<%= @user.affiliation.present? ? @user.affiliation : "未所属" %></td>
+    
+    <!--２列目��項：氏名表示-->
+    <td>氏名：<%= @user.name %></td>
+    
+    <!--２列目３〜４項：コード表示-->
+    <td width = "7%">コード</td>
+    <td width = "7%"><%= @user.employee_number if @user.employee_number.present? %></td>
+    
+    <!--２列目５項：出勤日数カウント表示-->
+    <td width = "11%">出勤日数：<%= @attendances_count %>日</td>
+    
+    <!--２列目６項：締日表示-->
+    <td>締日 <%= @last_day.to_s(:date) %></td>
+  </tr>
+</table>
