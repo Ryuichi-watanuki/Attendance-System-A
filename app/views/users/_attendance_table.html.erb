@@ -1,119 +1,120 @@
 
 <!--勤怠情報表示テーブル-->
 <table class = "table-bordered table-striped table-condensed">
-<!--勤怠情報表示ヘッダー-->
-<thead>
-  <!--１列目-->
-  <tr>
-    <th rowspan = "3" width = "8%">残業申請</th>
-    <th rowspan = "3" width = "5%">日付</th>
-    <th rowspan = "3" width = "4%">曜日</th>
-    <th colspan = "8" width = "38%">【実績】</th>
-    <th colspan = "5" width = "45%">【指定外勤務】</th>
-  </tr>
+  <!--勤怠情報表示ヘッダー-->
+  <thead>
+    <!--１列目-->
+    <tr>
+      <th rowspan = "3" width = "8%">残業申請</th>
+      <th rowspan = "3" width = "5%">日付</th>
+      <th rowspan = "3" width = "4%">曜日</th>
+      <th colspan = "8" width = "38%">【実績】</th>
+      <th colspan = "5" width = "45%">【指定外勤務】</th>
+    </tr>
+    
+    <!--２列目-->
+    <tr>
+      <!--rowspan:縦結合、colspan：横結合-->
+      <th colspan = "3">出社</th>
+      <th colspan = "3">退社</th>
+      <th rowspan = "2">在社時間</th>
+      <th rowspan = "2">備考</th>
+      <th colspan = "2">終了予定時間</th>
+      <th rowspan = "2">指定外時間</th>
+      <th rowspan = "2">業務処理内容</th>
+      <th rowspan = "2">指示者確認印</th>
+    </tr>
+    
+    <!--３列目-->
+    <tr>
+      <th>時</th>
+      <th>分</th>
+      <th></th>
+      <th>時</th>
+      <th>分</th>
+      <th ></th>
+      <th>時</th>
+      <th>分</th>
+    </tr>
+  </thead>
   
-  <!--２列目-->
-  <tr>
-    <!--rowspan:縦結合、colspan：横結合-->
-    <th colspan = "3">出社</th>
-    <th colspan = "3">退社</th>
-    <th rowspan = "2">在社時間</th>
-    <th rowspan = "2">備考</th>
-    <th colspan = "2">終了予定時間</th>
-    <th rowspan = "2">指定外時間</th>
-    <th rowspan = "2">業務処理内容</th>
-    <th rowspan = "2">指示者確認印</th>
-  </tr>
-  
-  <!--３列目-->
-  <tr>
-    <th>時</th>
-    <th>分</th>
-    <th></th>
-    <th>時</th>
-    <th>分</th>
-    <th ></th>
-    <th>時</th>
-    <th>分</th>
-  </tr>
-</thead>
-
-<!--勤怠情報表示日付部分-->
-<tbody>
-  <% @days.each do |d| %>
-  <!--この列をeachで繰り返し表示している-->
-  <tr class = "days" >
-    
-    <!--残業申請ボタン-->
-    <td><%= button_to "残業申請",user_url,{class: "btn btn-request btn-primary btn-sm"} %></td>
-    
-    <!--１項：日付-->
-    <td><%= d.attendance_day.to_s(:day) %></td>
-    
-    <!--２項：曜日-->
-    <% if @week[d.attendance_day.wday] == '土' %><!--土曜日は青色-->
-      <td style="color: blue;"><%= @week[d.attendance_day.wday] %></td>
-    <% elsif @week[d.attendance_day.wday] == '日' %><!--日曜日は赤色-->
-      <td style="color: red;"><%= @week[d.attendance_day.wday] %></td>
-    <% else %>
-      <td><%= @week[d.attendance_day.wday] %></td>
+  <!--勤怠情報表示日付部分-->
+  <tbody>
+    <% @days.each do |d| %>
+    <!--この列をeachで繰り返し表示している-->
+    <tr class = "days" >
+      
+      <!--残業申請ボタン-->
+      <td><%= button_to "残業申請",user_url,{class: "btn btn-request btn-primary btn-sm"} %></td>
+      
+      <!--１項：日付-->
+      <td><%= d.attendance_day.to_s(:day) %></td>
+      
+      <!--２項：曜日-->
+      <% if @week[d.attendance_day.wday] == '土' %><!--土曜日は青色-->
+        <td style="color: blue;"><%= @week[d.attendance_day.wday] %></td>
+      <% elsif @week[d.attendance_day.wday] == '日' %><!--日曜日は赤色-->
+        <td style="color: red;"><%= @week[d.attendance_day.wday] %></td>
+      <% else %>
+        <td><%= @week[d.attendance_day.wday] %></td>
+      <% end %>
+      
+      <!--３〜４項：出社時間表示（データが存在する場合）-->
+      <td><%= d.time_in.to_s(:hour) if d.time_in.present? %></td>
+      <td><%= d.time_in.to_s(:minute) if d.time_in.present? %></td>
+      
+      <!--５項：出社ボタン表示（当日かつ出社時間が存在しない場合）-->
+      <td>
+        <% if d.attendance_day == Date.current && d.time_in.nil? %>
+          <%= button_to "出社",timein_creat_path(@user,params:{id: @user.id}),{class: "btn btn-attendance btn-default"} %>
+        <% end %>
+      </td>
+      
+      <!--６〜７項：退社時間表示（データが存在する場合）-->
+      <td><%= d.time_out.to_s(:hour) if d.time_out.present? %></td>
+      <td><%= d.time_out.to_s(:minute) if d.time_out.present? %></td>
+      
+      <!--８項：退社ボタン表示（当日かつ出社時間あり、かつ退社時間なし）-->
+      <td>
+        <% if d.attendance_day == Date.current && d.time_in.present? && d.time_out.nil? %>
+          <%= button_to "退社",timeout_creat_path(@user,params:{id: @user.id}), class: "btn btn-attendance btn-default" %>
+        <% end %>
+      </td>
+      
+      <!--９項：在社時間表示（出社時間と退社時間がどちらもある）-->
+      <td>
+        <%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present? %>
+      </td>
+      <!--備考-->
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <!--eachを締め-->
     <% end %>
-    
-    <!--３〜４項：出社時間表示（データが存在する場合）-->
-    <td><%= d.time_in.to_s(:hour) if d.time_in.present? %></td>
-    <td><%= d.time_in.to_s(:minute) if d.time_in.present? %></td>
-    
-    <!--５項：出社ボタン表示（当日かつ出社時間が存在しない場合）-->
-    <td>
-      <% if d.attendance_day == Date.current && d.time_in.nil? %>
-        <%= button_to "出社",timein_creat_path(@user,params:{id: @user.id}),{class: "btn btn-attendance btn-default"} %>
-      <% end %>
-    </td>
-    
-    <!--６〜７項：退社時間表示（データが存在する場合）-->
-    <td><%= d.time_out.to_s(:hour) if d.time_out.present? %></td>
-    <td><%= d.time_out.to_s(:minute) if d.time_out.present? %></td>
-    
-    <!--８項：退社ボタン表示（当日かつ出社時間あり、かつ退社時間なし）-->
-    <td>
-      <% if d.attendance_day == Date.current && d.time_in.present? && d.time_out.nil? %>
-        <%= button_to "退社",timeout_creat_path(@user,params:{id: @user.id}), class: "btn btn-attendance btn-default" %>
-      <% end %>
-    </td>
-    
-    <!--９項：在社時間表示（出社時間と退社時間がどちらもある）-->
-    <td>
-      <%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present? %>
-    </td>
-    <!--備考-->
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <!--eachを締め-->
-  <% end %>
-</tbody>
-
-<!--勤怠情報表示フッター-->
-<tfoot>
-  <tr>
-    <td></td>
-    <!--１項：総合勤務時間（基本時間 * 出勤日数）-->
-    <td colspan = "2">
-      <%= basic_info_time(@user.basic_time).to_d * @attendances_sum if @user.basic_time.present? %>
-    </td>
-    
-    <td colspan = "6"></td>
-    
-    <!--３項：在社時間の合計（秒）を１０段階表示で計上する-->
-    <td><%= ((@total_time.to_d/ 60)/ 60).truncate(2) if @total_time.present? %></td>
-    
-    <td></td>
-    <td colspan = "4"></td>
-    <td>所属長承認</td>
-  </tr>
-</tfoot>
+  </tbody>
+  
+  <!--勤怠情報表示フッター-->
+  <tfoot>
+    <tr>
+      <td></td>
+      <!--１項：総合勤務時間（基本時間 * 出勤日数）-->
+      <td colspan = "2">
+        <%= basic_info_time(@user.basic_time).to_d * @attendances_sum if @user.basic_time.present? %>
+      </td>
+      
+      <td colspan = "6"></td>
+      
+      <!--３項：在社時間の合計（秒）を１０段階表示で計上する-->
+      <td><%= ((@total_time.to_d/ 60)/ 60).truncate(2) if @total_time.present? %></td>
+      
+      <td></td>
+      <td colspan = "4"></td>
+      <td>所属長承認</td>
+    </tr>
+  </tfoot>
+  
 </table>

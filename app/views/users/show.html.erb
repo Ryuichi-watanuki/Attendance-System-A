@@ -4,6 +4,13 @@
   <!--ユーザー情報表示テーブル-->
   <%= render 'users/attendance_user' %>
   
+  
+  <ul style="list-style: none; text-decoration: none;margin: 5px 5px; padding: 0;">
+    <li><%= link_to "【所属長承認申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
+    <li><%= link_to "【勤怠変更申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
+    <li><%= link_to "【残業申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
+  </ul>
+  
   <!--勤怠系操作ボタン（左寄）-->
   <%= link_to "勤怠を編集", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
   <%= link_to "勤怠修正ログ（承認済）", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
@@ -18,7 +25,9 @@
   
   <!--週間表示の場合ページネーション対応-->
   <% if @display_month == false %>
-    <div style="float: right; margin: 25px 100px 10px 0px;"><%= will_paginate @days, { :previous_label => '先週へ', :next_label => '次週へ' } %></div>
+    <div style="float: right; margin: 0px 180px 5px 0px;">
+      <%= will_paginate @days, { :previous_label => '先週へ', :next_label => '次週へ' } %>
+    </div>
   <% end %>
   
   <!--勤怠情報表示テーブル-->

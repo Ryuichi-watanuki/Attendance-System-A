@@ -262,6 +262,17 @@ input {
   }
 }
 
+// アコーディオン展開前の要素内
+.panel-heading {
+  ul {
+    li {
+      display: inline-block;
+      padding: 0;
+      margin: 0px 10px;
+    }
+  }
+}
+
 // ユーザ一覧画面　アコーディオン内左側
 .user-edit-accordion-left {
   float: left;
@@ -365,13 +376,13 @@ th {
 
 // 勤怠編集画面遷移ボタン
 .btn-edit-attendance {
-  margin: 25px 5px 10px 0px;
+  margin: 0px 5px 5px 0px;
   float: left;
 }
 
 // 1週間表示切り替えボタン
 .btn-attendance-week {
-  margin: 25px 0px 10px 0px;
+  margin: 0px 5px 5px 0px;
   float: right;
 }
 
