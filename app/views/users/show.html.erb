@@ -1,10 +1,11 @@
+<!--勤怠表示画面を構成するパーツをイメージしてパーシャル化-->
 <% provide(:title,"勤怠表示画面" ) %>
 
 <div>
   <!--ユーザー情報表示テーブル-->
   <%= render 'users/attendance_user' %>
   
-  
+  <!--申請のお知らせリンク-->
   <ul style="list-style: none; text-decoration: none;margin: 5px 5px; padding: 0;">
     <li><%= link_to "【所属長承認申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
     <li><%= link_to "【勤怠変更申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
@@ -16,14 +17,14 @@
   <%= link_to "勤怠修正ログ（承認済）", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
   <%= link_to "CSV出力", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), class: "btn btn-edit-attendance btn-primary" %>
   
-  <!--勤怠表示（月間週間）切替ボタン（右寄）-->
+  <!--勤怠表示（月間と週間）切替ボタン（右寄）-->
   <% if @display_month == true %>
     <%= link_to "週間表示切替", display_change_path(params:{ id: @user.id, first_day: @first_day }), class: "btn btn-attendance-week btn-primary" %>
   <% else %>
     <%= link_to "月間表示切替", user_path(params:{ id: @user.id, first_day: @first_day }), class: "btn btn-attendance-week btn-primary" %>
   <% end %>
   
-  <!--週間表示の場合ページネーション対応-->
+  <!--週間表示の場合ページネーションパネル-->
   <% if @display_month == false %>
     <div style="float: right; margin: 0px 180px 5px 0px;">
       <%= will_paginate @days, { :previous_label => '先週へ', :next_label => '次週へ' } %>

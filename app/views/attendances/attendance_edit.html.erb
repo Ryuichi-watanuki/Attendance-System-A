@@ -1,42 +1,69 @@
+<!--勤怠編集画面-->
 <% provide(:title,"勤怠編集画面" ) %>
+
 <div>
   <h1>勤怠編集画面</h1>
   <%= form_for(@user, url: update_all_path, method: :post) do |f| %>
-  <%= hidden_field_tag :id, @user.id %>
-  <%= hidden_field_tag :first_day, @first_day %>
-  <table class = "table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th width = "7%">日付</th>
-        <th width = "7%">曜日</th>
-        <th width = "18%">出社</th>
-        <th width = "18%">退社</th>
-        <th width = "10%">在社時間</th>
-        <th width = "15%">備考</th>
-        <th width = "15%">残業指示</th>
-        <th width = "10%">指示者</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @days.each do |d| %>
-        <%= fields_for "attendances[]", d do |tf| %>
-          <tr>
-            <td class = "day"><%= d.attendance_day.to_s(:day) %></td>
-            <td class = "day"><%= @week[d.attendance_day.wday] %></td>
-            <td><%= tf.time_field :time_in, class: "form-control tf" %></td>
-            <td><%= tf.time_field :time_out, class: "form-control tf" %></td>
-            <td><%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present? %></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
+    <%= hidden_field_tag :id, @user.id %>
+    <%= hidden_field_tag :first_day, @first_day %>
+    
+    <table class = "table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th width = "7%">日付</th>
+          <th width = "7%">曜日</th>
+          <th width = "18%">出社</th>
+          <th width = "18%">退社</th>
+          <th width = "6%">翌日</th>
+          <th width = "15%">在社時間</th>
+          <th width = "15%">備考</th>
+          <th width = "10%">指示者確認印</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <% @days.each do |d| %>
+          <%= fields_for "attendances[]", d do |tf| %>
+            <tr>
+              <!--日付-->
+              <td class = "day"><%= d.attendance_day.to_s(:day) %></td>
+              
+              <!--曜日-->
+              <% if @week[d.attendance_day.wday] == '土' %>
+                <td style="color: blue;"><%= @week[d.attendance_day.wday] %></td>
+              <% elsif @week[d.attendance_day.wday] == '日' %>
+                <td style="color: red;"><%= @week[d.attendance_day.wday] %></td>
+              <% else %>
+                <td><%= @week[d.attendance_day.wday] %></td>
+              <% end %>
+              
+              <!--出社時間-->
+              <td><%= tf.time_field :time_in, class: "form-control tf" %></td>
+              
+              <!--退社時間-->
+              <td><%= tf.time_field :time_out, class: "form-control tf" %></td>
+              
+              <!--翌日-->
+              <td></td>
+              
+              <!--在社時間-->
+              <td><%= working_hours(d.time_in,d.time_out) if d.time_in.present? && d.time_out.present? %></td>
+              
+              <!--備考-->
+              <td></td>
+              
+              <!--指示者確認印-->
+              <td></td>
+            </tr>
+          <% end %>
         <% end %>
-      <% end %>
-    </tbody>
-  </table>
-  <center>
-    <%= f.submit "編集内容で更新", style:"width:300px", class: "btn btn-primary" %>
-    <%= link_to "キャンセル", user_url(@user, params:{first_day: @first_day }),style:"width:300px", class: "btn btncancel btn-default" %>
-  </center>
-  <% end %>
+      </tbody>
+    </table>
+    
+    <center>
+      <%= f.submit "編集内容で更新", style:"width:300px", class: "btn btn-attendance-update btn-primary" %>
+      <%= link_to "キャンセル", user_url(@user, params:{first_day: @first_day }),style:"width:300px", class: "btn btn-attendance-update btn-default" %>
+    </center>
+    
+    <% end %>
 </div>
