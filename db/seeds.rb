@@ -1,5 +1,5 @@
 # ユーザー
-User.create!(name:  "アドミンマン",
+User.create!(name:  "管理者",
              email: "example@railstutorial.org",
              password:              "foobar",
              password_confirmation: "foobar",
@@ -14,7 +14,7 @@ User.create!(name:  "アドミンマン",
              activated_at: Time.zone.now)
 
 User.create!(name:  "バラライカ",
-             email: "boss@railstutorial.org",
+             email: "example2@railstutorial.org",
              password:              "foobar",
              password_confirmation: "foobar",
              affiliation: "大尉",
@@ -27,7 +27,7 @@ User.create!(name:  "バラライカ",
              activated_at: Time.zone.now)
 
 User.create!(name:  "リーダー",
-             email: "boss@railstutorial.org",
+             email: "example3@railstutorial.org",
              password:              "foobar",
              password_confirmation: "foobar",
              affiliation: "上長A",
@@ -40,7 +40,7 @@ User.create!(name:  "リーダー",
              activated_at: Time.zone.now)
 
 User.create!(name:  "ボス",
-             email: "boss@railstutorial.org",
+             email: "example4@railstutorial.org",
              password:              "foobar",
              password_confirmation: "foobar",
              affiliation: "上長B",
@@ -53,7 +53,7 @@ User.create!(name:  "ボス",
              activated_at: Time.zone.now)
 
 User.create!(name:  "テスト一般ユーザ用",
-             email: "example2@railstutorial.org",
+             email: "example5@railstutorial.org",
              password:              "foobar",
              password_confirmation: "foobar",
              affiliation: "一般",

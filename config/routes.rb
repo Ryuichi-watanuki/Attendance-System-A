@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
-  # get '/attendance_edit', to: 'users#show'
 
   get '/display_change', to: 'users#display_mode_change'
 

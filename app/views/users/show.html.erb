@@ -7,8 +7,11 @@
   
   <!--申請のお知らせリンク-->
   <ul style="list-style: none; text-decoration: none;margin: 5px 5px; padding: 0;">
-    <li><%= link_to "【所属長承認申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
+    <!--月の勤怠申請-->
+    <%= render 'users/month_request' %>
+    
     <li><%= link_to "【勤怠変更申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
+    
     <li><%= link_to "【残業申請のお知らせ】", attendance_edit_path(params:{id: @user.id, first_day: @first_day }), style:"color:black;" %></li>
   </ul>
   

@@ -1,64 +1,55 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
-  # before_action :correct_user,   only: [:edit, :update]
-  before_action :correct_or_admin_user,   only: [:edit, :update]
   before_action :admin_user,     only: [:index,:edit_basic_info, :destroy]
+  before_action :correct_or_admin_user,   only: [:edit, :update]
   
   
-  # 勤怠表示画面
   def show
-    @user = User.find(params[:id])
-    params[:display_mode].nil? ? @display_month = true : @display_month = false
-    
-    
-    if current_user.admin? || current_user.id == @user.id
-      @week = %w{日 月 火 水 木 金 土}
-      
-      !params[:first_day].nil? ? @first_day = Date.parse(params[:first_day]) : @first_day = Date.current.beginning_of_month
-      @last_day = @first_day.end_of_month
-      
-      # 取得月の初日から終日まで繰り返し処理
-      (@first_day..@last_day).each do |day|
-        # attendancesテーブルに各日付のデータがあるか
-        if not @user.attendances.any? { |obj| obj.attendance_day == day }
-          # ない日付はインスタンスを生成して保存する
-          date = Attendance.new(user_id: @user.id, attendance_day: day)
-          date.save
-        end
-      end
-      
-      if @display_month == true
-        # 当月を昇順で取得し@daysへ代入
-        @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day')
-      else
-        @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day').paginate(page: params[:page], per_page: 7)
-      end
-      
-      # 在社時間の集計、ついでに出勤日数も
-      i = 0
-      @days.each do |d|
-        if d.time_in.present? && d.time_out.present?
-          second = 0
-          second = times(d.time_in,d.time_out)
-          @total_time = @total_time.to_i + second.to_i
-          i = i + 1
-        end
-      end
-    
-      # 出勤日数、どっち使ってもOK
-      @attendances_count = i
-      @attendances_sum = @days.where.not(time_in: nil, time_out: nil).count
-    else
+    if not (current_user.admin? || current_user.id == @user.id)
       flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
       redirect_to current_user
     end
+    
+    @user = User.find(params[:id])
+    params[:display_mode].nil? ? @display_month = true : @display_month = false # 表示切り替えパラメータを受け取っているか
+    @weeks = %w{日 月 火 水 木 金 土}
+    !params[:first_day].nil? ? @first_day = Date.parse(params[:first_day]) : @first_day = Date.current.beginning_of_month
+    @last_day = @first_day.end_of_month # 月の初日と締日の取得OK
+    
+    (@first_day..@last_day).each do |day|
+      if not @user.attendances.any? { |obj| obj.attendance_day == day }
+        date = Attendance.new(user_id: @user.id, attendance_day: day)
+        date.save
+      end
+    end
+    
+    if @display_month == true
+      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day')
+    else
+      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?', @first_day, @last_day).order('attendance_day').paginate(page: params[:page], per_page: 7)
+    end
+    
+    i = 0
+    @days.each do |d|
+      if d.time_in.present? && d.time_out.present?
+        second = 0
+        second = times(d.time_in,d.time_out)
+        @total_time = @total_time.to_i + second.to_i
+        i += 1
+      end
+    end
+    @attendances_count = i
+    
+    @not_myself_boss_users = User.where.not(id: @user.id, boss:false) # 自分以外の上長ユーザ
+    
+    @month_request = MonthRequest.new(request_user_id: @user.id,request_month: @first_day) # 申請時新規作成
+    
   end
   
-  # 週間表示切替
   def display_mode_change
     @user = User.find(params[:id])
     !params[:first_day].nil? ? @first_day = Date.parse(params[:first_day]) : @first_day = Date.current.beginning_of_month
-    redirect_to user_path(id: @user.id, display_mode: "weeks", first_day: @first_day)
+    redirect_to user_path(id: @user.id, display_mode: "weeks", first_day: @first_day) # 切り替えワードをパラメータで渡す
   end
   
   # 出勤時間登録
@@ -72,9 +63,9 @@ class UsersController < ApplicationController
       DateTime.now.hour,
       DateTime.now.min,0
       )
-    @time_in.update_attributes(time_in: time_in) 
-    flash[:info] = "おはようございます。"
-    redirect_to @user
+    @time_in.update_attributes(time_in: time_in)
+      flash[:info] = "おはようございます。"
+      redirect_to @user
   end
 
   # 退社時間登録
@@ -91,6 +82,10 @@ class UsersController < ApplicationController
     @time_out.update_attributes(time_out: timeout)
     flash[:info] = "お疲れ様でした。"
     redirect_to @user
+  end
+  
+  def month_request
+    
   end
   
   # ユーザ一覧
@@ -118,7 +113,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # ユーザー新規登録画面
   def new
     @user = User.new
   end
@@ -134,7 +128,6 @@ class UsersController < ApplicationController
     end
   end
   
-  # ユーザー情報編集画面
   def edit
     @user = User.find(params[:id])
   end
@@ -149,16 +142,13 @@ class UsersController < ApplicationController
     end
   end
 
-  # ユーザー消去  
   def destroy
     User.find(params[:id]).destroy
     flash[:success] = "消去しました。"
     redirect_to users_url
   end
   
-  # 基本情報編集画面
   def edit_basic_info
-    # パラメータを受け取っている？
     if params[:id].nil?
       @user  = User.find(current_user.id)
     else
@@ -166,10 +156,8 @@ class UsersController < ApplicationController
     end
   end
   
-  # 基本情報更新アクション
   def basic_info_edit
     @user  = User.find(params[:id])
-    
     if @user.update_attributes(user_params)
       flash[:success] = "基本情報を更新しました。"
       redirect_to @user
@@ -248,26 +236,6 @@ class UsersController < ApplicationController
     
     def search_params
       params.require(:q).permit(:name_cont)
-    end
-    
-    # 正しいユーザーかどうか確認
-    def correct_user
-      @user = User.find(params[:id])
-      redirect_to(root_url) unless current_user?(@user)
-    end
-    
-    # カレントユーザーがログインユーザー、もしくは管理者かを確認
-    def correct_or_admin_user
-      @user = User.find(params[:id])
-      if not current_user?(@user) and not current_user.admin?
-        flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
-        redirect_to(root_url)
-      end
-    end
-    
-    # 管理者かどうか確認
-    def admin_user
-      redirect_to(root_url) unless current_user.admin?
     end
     
     # CSVフォーマットのダウンロード
