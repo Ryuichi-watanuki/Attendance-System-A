@@ -2,7 +2,6 @@ require "time"
 class AttendancesController < ApplicationController
   before_action :admin_user,     only: [:attendance_in]
 
-
   # 勤怠編集画面 
   def attendance_edit
     @user = User.find(params[:id])
@@ -29,8 +28,7 @@ class AttendancesController < ApplicationController
       end
       
       # 当月を昇順で取得し@daysへ代入
-      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?',\
-      @first_day, @last_day).order('attendance_day')
+      @days = @user.attendances.where('attendance_day >= ? and attendance_day <= ?',@first_day, @last_day).order('attendance_day')
       
     else
       flash[:warning] = "他のユーザーの勤怠情報は閲覧できません。"
@@ -71,20 +69,16 @@ class AttendancesController < ApplicationController
   def attendance_in
     # 空のハッシュを定義
     @time_in_user = {}
+    @attendance_in_count = 0
     User.all.each do |user|
-      # このifがよくわからなくなったらany?メソッドをおさらい
-      # ブロックに記述した条件が真の場合、処理を実行する
-      if user.attendances.any? { |obj| (obj.attendance_day == Date.current && obj.time_in.present? && obj.time_out.blank?) }
-        # 出社時間を拾うため
-        today = user.attendances.find_by(attendance_day: Date.current)
-        # キーを任意の文字列で設定したら失敗した、user毎の変数で設定する。
-        # eachで繰り返してるuserのidをキーに社員番号、氏名、所属、出社時間を代入
+      if user.attendances.any? {|obj| (obj.attendance_day == Date.current && obj.time_in.present? && obj.time_out.blank?)}
+        today = user.attendances.find_by(attendance_day: Date.current) #出勤時間も表示してみた
         @time_in_user[user.id] = user.employee_number, user.name, user.affiliation, today.time_in
+        @attendance_in_count += 1
       end
     end
   end
   
-  # プライベート
   private
     
     def attendances_params

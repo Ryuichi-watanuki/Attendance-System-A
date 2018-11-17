@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  # attendancesテーブルとの関連付け
-  # userを削除した時、関連したデータを削除
   has_many :attendances, dependent: :destroy
   
   has_many :microposts, dependent: :destroy
@@ -18,12 +16,10 @@ class User < ApplicationRecord
   before_create :create_activation_digest
   validates :name,  presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :email, presence: true, length: { maximum: 255 },
-    format: { with: VALID_EMAIL_REGEX },
-    uniqueness: { case_sensitive: false }
+  validates :email, presence: true, length: { maximum: 255 },format: { with: VALID_EMAIL_REGEX },uniqueness: { case_sensitive: false }
   
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :password, presence: true, length: { minimum: 4 }, allow_nil: true
   
   # 渡された文字列のハッシュ値を返す
   def User.digest(string)

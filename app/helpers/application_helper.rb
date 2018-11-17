@@ -10,6 +10,16 @@ module ApplicationHelper
     end
   end
   
+  def attendance_time_now
+    DateTime.new(
+      DateTime.now.year,
+      DateTime.now.month,
+      DateTime.now.day,
+      DateTime.now.hour,
+      DateTime.now.min,0
+      )
+  end
+  
   # 半角英数字を全角に変換 
   def half_to_full(str)
     str.tr('0-9a-zA-Z', '０-９ａ-ｚＡ-Ｚ')

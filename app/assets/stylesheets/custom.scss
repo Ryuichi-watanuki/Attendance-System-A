@@ -252,13 +252,46 @@ input {
 /* Users index */
 
 .users {
+  clear: both;
   list-style: none;
   margin: 0;
   li {
     overflow: auto;
     padding: 10px 0;
-    border-bottom: 1px solid $gray-lighter;
+    // border-bottom: 1px solid $gray-lighter;
   }
+}
+
+// アコーディオン展開前の要素内
+.panel-heading {
+  ul {
+    li {
+      display: inline-block;
+      padding: 0;
+      margin: 0px 10px;
+    }
+  }
+}
+
+// ユーザ一覧画面　アコーディオン内左側
+.user-edit-accordion-left {
+  float: left;
+  width: 46%;
+  margin-left: 20px;
+}
+
+// ユーザ一覧画面　アコーディオン内右側
+.user-edit-accordion-right {
+  float: right;
+  width: 46%;
+  margin-right: 20px;
+}
+
+// ユーザ一覧画面　アコーディオン内下部
+.user-edit-accordion-bottom {
+  clear: both;
+  width: 70%;
+  margin: 0 auto;
 }
 
 /* microposts */
@@ -343,8 +376,14 @@ th {
 
 // 勤怠編集画面遷移ボタン
 .btn-edit-attendance {
-  margin: 25px 5px 10px 0px;
-  // width: 100%;
+  margin: 0px 5px 5px 0px;
+  float: left;
+}
+
+// 1週間表示切り替えボタン
+.btn-attendance-week {
+  margin: 0px 5px 5px 0px;
+  float: right;
 }
 
 // 出社・退社ボタン
@@ -374,7 +413,7 @@ a.updbtn {
   text-align: center;
 }
 
-.btncancel {
+.btn-attendance-update {
   margin-top: 15px;
 }
 
@@ -390,4 +429,9 @@ td.specified-time {
 
 table.attendance-in {
   width: 70%;
+}
+
+// ページネーション
+.pagination {
+  margin: 0;
 }
